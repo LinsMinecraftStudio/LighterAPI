@@ -33,9 +33,7 @@ public class ChunkUtils {
 
     public static List<IChunkData> mergeChunks(List<IChunkData> input) {
         List<IChunkData> output = new ArrayList<>();
-        Iterator<IChunkData> it = input.iterator();
-        while (it.hasNext()) {
-            IChunkData data = it.next();
+        for (IChunkData data : input) {
             Iterator<IChunkData> itc = output.iterator();
             boolean found = false;
             while (itc.hasNext()) {

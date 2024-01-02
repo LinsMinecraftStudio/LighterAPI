@@ -1,8 +1,9 @@
 ![Image](/images/logo5.png)
 
-# LightAPI
+# LighterAPI
 
-Bukkit Library for create invisible light source
+Bukkit Library for create invisible light source(A fork of LightAPI)  
+Suported versions: 1.14.1-1.20.4(not completed)
 
 - [CONTRIBUTORS](https://github.com/BeYkeRYkt/LightAPI/graphs/contributors)
 

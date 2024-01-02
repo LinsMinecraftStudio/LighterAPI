@@ -208,9 +208,8 @@ public final class LightAPI {
 
     @Deprecated
     public static List<IChunkData> collectChunks(String worldName, int blockX, int blockY, int blockZ, int lightlevel) {
-        List<IChunkData> list = new ArrayList<>();
         // Let's not do this , all right?
-        return list;
+        return new ArrayList<>();
     }
 
     @Deprecated

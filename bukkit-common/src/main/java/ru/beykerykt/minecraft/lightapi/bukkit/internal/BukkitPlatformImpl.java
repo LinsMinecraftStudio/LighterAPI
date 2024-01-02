@@ -280,9 +280,7 @@ public class BukkitPlatformImpl implements IPlatformImpl, IBukkitExtension {
 
     @Override
     public void log(String msg) {
-        StringBuilder builder = new StringBuilder(ChatColor.AQUA + "<LightAPI>: ");
-        builder.append(ChatColor.WHITE).append(msg);
-        mPlugin.getServer().getConsoleSender().sendMessage(builder.toString());
+        mPlugin.getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "<LightAPI>: " + ChatColor.WHITE + msg);
     }
 
     @Override
@@ -336,13 +334,10 @@ public class BukkitPlatformImpl implements IPlatformImpl, IBukkitExtension {
     public int sendCmdLocked(int cmdId, Object... args) {
         int resultCode = ResultCode.SUCCESS;
         // handle internal codes
-        switch (cmdId) {
-            case InternalCode.UPDATE_UUID:
-                mUUID = (UUID) args[0];
-                break;
-            default:
-                resultCode = getHandler().sendCmd(cmdId, args);
-                break;
+        if (cmdId == InternalCode.UPDATE_UUID) {
+            mUUID = (UUID) args[0];
+        } else {
+            resultCode = getHandler().sendCmd(cmdId, args);
         }
         return resultCode;
     }
@@ -407,7 +402,7 @@ public class BukkitPlatformImpl implements IPlatformImpl, IBukkitExtension {
         boolean flag = Build.API_VERSION == Build.PREVIEW;
         try {
             Class.forName("ru.beykerykt.lightapi.LightAPI");
-            return forceLegacy ? true : (flag & true);
+            return forceLegacy || flag;
         } catch (ClassNotFoundException ex) {
             return false;
         }

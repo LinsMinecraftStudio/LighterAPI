@@ -34,6 +34,13 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>lightapi-craftbukkit-nms-v1_17_R1</artifactId>
 
+    <repositories>
+        <repository>
+            <id>codemc-nms</id>
+            <url>https://repo.codemc.io/repository/nms/</url>
+        </repository>
+    </repositories>
+
     <build>
         <defaultGoal>clean package install</defaultGoal>
         <plugins>
@@ -82,8 +89,8 @@
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper</artifactId>
             <version>${paper.version}</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/Paper-Server-reobf.jar</systemPath>
+            <scope>provided</scope>
+            <type>jar</type>
         </dependency>
     </dependencies>
 

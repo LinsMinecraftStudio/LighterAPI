@@ -39,34 +39,31 @@ public class UsageTest {
         EditPolicy editPolicy = EditPolicy.DEFERRED;
         SendPolicy sendPolicy = SendPolicy.DEFERRED;
         LightAPI.get().setLightLevel(world, blockX, blockY, blockZ, lightLevel, lightTypeFlags, editPolicy, sendPolicy,
-                new ICallback() {
-                    @Override
-                    public void onResult(int requestFlag, int resultCode) {
-                        switch (requestFlag) {
-                            case RequestFlag.EDIT:
-                                if (resultCode == ResultCode.SUCCESS) {
-                                    System.out.println("Light level was edited.");
-                                } else {
-                                    System.out.println("request (" + requestFlag + "): result code " + resultCode);
-                                }
-                                break;
-                            case RequestFlag.RECALCULATE:
-                                if (resultCode == ResultCode.SUCCESS) {
-                                    int newBlockLight = LightAPI.get().getLightLevel(world, blockX, blockY, blockZ,
-                                            lightTypeFlags);
-                                    if (oldBlockLight != newBlockLight) {
-                                        System.out.println("Light level was recalculated.");
-                                    } else {
-                                        System.out.println("Light level was not recalculated.");
-                                    }
-                                } else {
-                                    System.out.println("request (" + requestFlag + "): result code " + resultCode);
-                                }
-                                break;
-                            case RequestFlag.SEPARATE_SEND:
+                (requestFlag, resultCode) -> {
+                    switch (requestFlag) {
+                        case RequestFlag.EDIT:
+                            if (resultCode == ResultCode.SUCCESS) {
+                                System.out.println("Light level was edited.");
+                            } else {
                                 System.out.println("request (" + requestFlag + "): result code " + resultCode);
-                                break;
-                        }
+                            }
+                            break;
+                        case RequestFlag.RECALCULATE:
+                            if (resultCode == ResultCode.SUCCESS) {
+                                int newBlockLight = LightAPI.get().getLightLevel(world, blockX, blockY, blockZ,
+                                        lightTypeFlags);
+                                if (oldBlockLight != newBlockLight) {
+                                    System.out.println("Light level was recalculated.");
+                                } else {
+                                    System.out.println("Light level was not recalculated.");
+                                }
+                            } else {
+                                System.out.println("request (" + requestFlag + "): result code " + resultCode);
+                            }
+                            break;
+                        case RequestFlag.SEPARATE_SEND:
+                            System.out.println("request (" + requestFlag + "): result code " + resultCode);
+                            break;
                     }
                 });
     }

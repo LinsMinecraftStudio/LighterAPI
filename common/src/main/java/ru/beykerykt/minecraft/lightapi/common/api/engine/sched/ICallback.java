@@ -26,6 +26,7 @@ package ru.beykerykt.minecraft.lightapi.common.api.engine.sched;
 /**
  * Callback interface for async light engine operations
  */
+@FunctionalInterface
 public interface ICallback {
 
     /**

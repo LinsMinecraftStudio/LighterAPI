@@ -36,12 +36,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import ru.beykerykt.minecraft.lightapi.common.api.engine.EditPolicy;
@@ -51,7 +46,7 @@ import ru.beykerykt.minecraft.lightapi.common.api.engine.SendPolicy;
 public class EntityTracker implements Listener {
 
     private final int RADIUS = 32;
-    private List<Entity> mTrackedEntityList = new CopyOnWriteArrayList<>();
+    private final List<Entity> mTrackedEntityList = new CopyOnWriteArrayList<>();
     private final Runnable searchRun = () -> {
         for (Player player : Bukkit.getOnlinePlayers()) {
             searchEntities(player);
@@ -59,7 +54,7 @@ public class EntityTracker implements Listener {
     };
     private Map<UUID, Location> lightLocations = new HashMap<>();
     private BukkitPlugin mPlugin;
-    private final Runnable updateRun = () -> updateLights();
+    private final Runnable updateRun = this::updateLights;
     private int taskId1;
     private int taskId2;
 
@@ -99,7 +94,7 @@ public class EntityTracker implements Listener {
     }
 
     private boolean isInRadius(Location center, Location loc, double radius) {
-        if (!loc.getWorld().equals(center.getWorld())) {
+        if (!Objects.equals(loc.getWorld(), center.getWorld())) {
             return false;
         }
         return center.distanceSquared(loc) <= (radius * radius);
@@ -194,13 +189,9 @@ public class EntityTracker implements Listener {
     }
 
     private void searchEntities(Player player) {
-        Iterator<Entity> entityList = player.getWorld().getEntitiesByClasses(new Class[] {
-                Monster.class,
+        for (Entity entity : player.getWorld().getEntitiesByClasses(Monster.class,
                 Item.class,
-                Projectile.class
-        }).iterator();
-        while (entityList.hasNext()) {
-            Entity entity = entityList.next();
+                Projectile.class)) {
             if (!isEntityInRadius(player.getLocation(), RADIUS, entity)) {
                 continue;
             }

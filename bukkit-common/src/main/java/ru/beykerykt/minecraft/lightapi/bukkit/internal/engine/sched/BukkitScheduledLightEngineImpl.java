@@ -54,7 +54,7 @@ public class BukkitScheduledLightEngineImpl extends ScheduledLightEngineImpl {
     private final String CONFIG_MAX_ITERATIONS_IN_PER_TICK = CONFIG_TITLE + ".max-iterations-in-per-tick";
 
     private final IHandler mHandler;
-    private ScheduledFuture mScheduledFuture;
+    private ScheduledFuture<?> mScheduledFuture;
     private int mTaskId = -1;
 
     /**

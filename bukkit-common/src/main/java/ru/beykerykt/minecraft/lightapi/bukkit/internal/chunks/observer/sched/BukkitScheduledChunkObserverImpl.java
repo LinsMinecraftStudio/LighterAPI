@@ -49,7 +49,7 @@ public class BukkitScheduledChunkObserverImpl extends ScheduledChunkObserverImpl
     private final String CONFIG_TICK_PERIOD = CONFIG_TITLE + ".tick-period";
 
     private final IHandler mHandler;
-    private ScheduledFuture mScheduledFuture;
+    private ScheduledFuture<?> mScheduledFuture;
 
     public BukkitScheduledChunkObserverImpl(BukkitPlatformImpl platform, IBackgroundService service, IHandler handler) {
         super(platform, service);

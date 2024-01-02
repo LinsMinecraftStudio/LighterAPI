@@ -27,7 +27,7 @@ public enum RelightPolicy {
 
     /**
      * Recalculation of world lighting occurs immediately after the change
-     *
+     * <p>
      * - EDIT_LIGHT_LEVEL
      * - RECALCULATE
      * - EDIT_LIGHT_LEVEL
@@ -38,7 +38,7 @@ public enum RelightPolicy {
 
     /**
      * Recalculation of world lighting occurs after edit changes
-     *
+     * <p>
      * - 1'st EDIT_LIGHT_LEVEL
      * - 2'st EDIT_LIGHT_LEVEL
      * - 3'st EDIT_LIGHT_LEVEL

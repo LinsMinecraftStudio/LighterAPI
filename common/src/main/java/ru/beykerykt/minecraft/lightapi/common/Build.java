@@ -34,7 +34,7 @@ public class Build {
      * ONLY FOR PREVIEW BUILD
      */
     @Deprecated
-    public static final int PREVIEW = 0;
+    public static final int PREVIEW = 1;
 
     /**
      * Public version for users. May change during any changes in the API. The string should change

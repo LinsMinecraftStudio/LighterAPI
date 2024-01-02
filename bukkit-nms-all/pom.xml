@@ -65,14 +65,6 @@
     </build>
 
     <dependencies>
-        <!-- Backward support -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>lightapi-bukkit-backward-support</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-            <type>jar</type>
-        </dependency>
         <!-- Common Bukkit LightAPI -->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -93,14 +85,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>lightapi-craftbukkit-common</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-            <type>jar</type>
-        </dependency>
-        <!-- CraftBukkit NMS v1_14_R1 LightAPI -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>lightapi-craftbukkit-nms-v1_14_R1</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
             <type>jar</type>
@@ -165,6 +149,22 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>lightapi-craftbukkit-nms-v1_19_R1</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+            <type>jar</type>
+        </dependency>
+        <!-- CraftBukkit NMS v1_19_R2 LightAPI -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>lightapi-craftbukkit-nms-v1_19_R2</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+            <type>jar</type>
+        </dependency>
+        <!-- CraftBukkit NMS v1_19_R3 LightAPI -->
+        <dependency>
+            <groupId>ru.beykerykt.minecraft</groupId>
+            <artifactId>lightapi-craftbukkit-nms-v1_19_R3</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
             <type>jar</type>
