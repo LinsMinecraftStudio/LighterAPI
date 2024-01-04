@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>ru.beykerykt.minecraft</groupId>
+		<artifactId>lightapi-parent</artifactId>
+		<version>5.3.0</version>
+	</parent>
+
+	<artifactId>lightapi-craftbukkit-nms-v1_20_R2</artifactId>
+
+	<repositories>
+		<repository>
+			<id>codemc-nms</id>
+			<url>https://repo.codemc.io/repository/nms/</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<!-- Common CraftBukkit LightAPI -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>lightapi-craftbukkit-common</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+			<type>jar</type>
+		</dependency>
+		<!-- PaperMC -->
+		<dependency>
+			<groupId>io.papermc.paper</groupId>
+			<artifactId>paper-server</artifactId>
+			<version>${paper.version}</version>
+			<scope>provided</scope>
+			<classifier>mojang-mapped</classifier>
+		</dependency>
+		<!-- Spigot API -->
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>${spigot-api.version}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<properties>
+		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+		<maven-jar-plugin.version>3.1.2</maven-jar-plugin.version>
+		<maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
+		<paper.version>1.20.2-R0.1-SNAPSHOT</paper.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<specialsource-maven-plugin.version>1.2.3</specialsource-maven-plugin.version>
+		<spigot-api.version>1.20.1-R0.1-SNAPSHOT</spigot-api.version>
+	</properties>
+</project>

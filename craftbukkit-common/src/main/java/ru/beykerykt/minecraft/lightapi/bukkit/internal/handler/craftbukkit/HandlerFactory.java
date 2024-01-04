@@ -58,7 +58,7 @@ public class HandlerFactory implements IHandlerFactory {
     @Override
     public IHandler createHandler(BukkitPlatformImpl impl) throws Exception {
         this.mPlatformImpl = impl;
-        IHandler handler = null;
+        IHandler handler;
         String serverImplPackage = Bukkit.getServer().getClass().getPackage().getName();
 
         if (serverImplPackage.startsWith(CRAFTBUKKIT_PKG)) { // make sure it's craftbukkit

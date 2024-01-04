@@ -80,7 +80,8 @@
         <module>craftbukkit-nms-v1_18_R2</module>
         <module>craftbukkit-nms-v1_19_R1</module>
         <module>craftbukkit-nms-v1_19_R2</module>
-        <module>craftbukkit-nms-v1_19R3</module>
+        <module>craftbukkit-nms-v1_19_R3</module>
+        <module>craftbukkit-nms-v1_20_R1</module>
         <!-- Sponge (Temporarily disable) -->
         <!-- <module>sponge-common</module>
         <module>sponge-mcp-v1_12_R1</module>

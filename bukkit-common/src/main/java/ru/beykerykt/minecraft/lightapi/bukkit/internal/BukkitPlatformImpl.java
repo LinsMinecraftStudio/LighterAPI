@@ -174,7 +174,7 @@ public class BukkitPlatformImpl implements IPlatformImpl, IBukkitExtension {
                 mHandler.onInitialization(this);
                 return;
             } else {
-                error("Compatibility mode can only work on versions > 1.17");
+                error("Compatibility mode can only work on versions >= 1.17");
             }
         }
 
@@ -200,7 +200,7 @@ public class BukkitPlatformImpl implements IPlatformImpl, IBukkitExtension {
     private void enableMetrics() {
         boolean enableMetrics = getConfig().getBoolean(CONFIG_ENABLE_METRICS);
         if (enableMetrics) {
-            Metrics metrics = new Metrics(getPlugin(), BSTATS_ID);
+            new Metrics(getPlugin(), BSTATS_ID);
         }
         info("Metrics is " + (enableMetrics ? "en" : "dis") + "abled!");
     }

@@ -21,23 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package ru.beykerykt.minecraft.lightapi.common.api.engine;
+package ru.beykerykt.minecraft.lightapi.bukkit.instance;
 
-@Deprecated
-public class LightType {
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-    /**
-     * N/A
-     */
-    public static final int NONE = LightFlag.NONE;
+import ru.beykerykt.minecraft.lightapi.common.internal.chunks.data.IChunkData;
 
-    /**
-     * Light from the blocks (torch, glowstone, etc.)
-     */
-    public static final int BLOCK_LIGHTING = LightFlag.BLOCK_LIGHTING;
+public class ChunkUtils {
 
-    /**
-     * Light from sky
-     */
-    public static final int SKY_LIGHTING = LightFlag.SKY_LIGHTING;
+    public static List<IChunkData> mergeChunks(List<IChunkData> input) {
+        List<IChunkData> output = new ArrayList<>();
+        for (IChunkData data : input) {
+            Iterator<IChunkData> itc = output.iterator();
+            boolean found = false;
+            while (itc.hasNext()) {
+                IChunkData data_c = itc.next();
+                if (data_c.getWorldName().equals(data.getWorldName()) && data_c.getChunkX() == data.getChunkX()
+                        && data_c.getChunkZ() == data.getChunkZ()) {
+                    // data_c.addSectionMaskBlock(data.getSectionMaskBlock());
+                    // data_c.addSectionMaskSky(data.getSectionMaskSky());
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                output.add(data);
+            }
+        }
+        return output;
+    }
 }

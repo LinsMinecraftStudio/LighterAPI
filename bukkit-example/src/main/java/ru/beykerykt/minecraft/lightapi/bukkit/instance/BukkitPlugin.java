@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package ru.beykerykt.minecraft.lightapi.bukkit.example;
+package ru.beykerykt.minecraft.lightapi.bukkit.instance;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -121,8 +121,7 @@ public class BukkitPlugin extends JavaPlugin {
                 List<IChunkData> chunkList = mHandler.collectChunkSections(location.getWorld(), location.getBlockX(),
                         location.getBlockY(), location.getBlockZ(), lightLevel == 0 ? blockLightLevel : lightLevel,
                         lightType);
-                for (int i = 0; i < chunkList.size(); i++) {
-                    IChunkData data = chunkList.get(i);
+                for (IChunkData data : chunkList) {
                     mHandler.sendChunk(data);
                 }
                 break;
@@ -188,7 +187,7 @@ public class BukkitPlugin extends JavaPlugin {
                         }
                         String strategy = args[1];
                         int cycle = Integer.parseInt(args[2]);
-                        boolean async = argsLength > 3 ? args[3].equals("async") : false;
+                        boolean async = argsLength > 3 && args[3].equals("async");
                         log(player, "Start benchmark: " + strategy + " (" + cycle + ")");
                         runBenchmark(player.getLocation(), async, strategy.toUpperCase(), cycle);
                     } else if (cmd.equals("set")) {

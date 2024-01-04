@@ -21,9 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package ru.beykerykt.minecraft.lightapi.bukkit.example;
+package ru.beykerykt.minecraft.lightapi.bukkit.instance;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -176,7 +177,9 @@ public class DebugListener implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        if (event.getBlock() == null) {
+        if (event.getBlock().getType() == Material.AIR ||
+                event.getBlock().getType() == Material.CAVE_AIR ||
+                event.getBlock().getType() == Material.VOID_AIR) {
             return;
         }
 
@@ -186,7 +189,9 @@ public class DebugListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        if (event.getBlock() == null) {
+        if (event.getBlock().getType() == Material.AIR ||
+                event.getBlock().getType() == Material.CAVE_AIR ||
+                event.getBlock().getType() == Material.VOID_AIR) {
             return;
         }
 

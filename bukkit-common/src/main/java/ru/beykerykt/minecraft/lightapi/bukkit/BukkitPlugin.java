@@ -54,7 +54,7 @@ public class BukkitPlugin extends JavaPlugin {
     @Override
     public void onLoad() {
         plugin = this;
-        mImpl = new BukkitPlatformImpl(plugin);
+        mImpl = new BukkitPlatformImpl(this);
         // set server implementation
         try {
             LightAPI.prepare(mImpl);
@@ -71,7 +71,6 @@ public class BukkitPlugin extends JavaPlugin {
         } catch (Exception ex) {
             ex.printStackTrace();
             getServer().getPluginManager().disablePlugin(this);
-            return;
         }
     }
 
