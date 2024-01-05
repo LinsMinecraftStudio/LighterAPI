@@ -66,22 +66,22 @@
         <!-- Common -->
         <module>common</module>
         <!-- Bukkit -->
-        <module>bukkit-common</module>
+        <module>bukkit/plugin</module>
         <module>bukkit-example</module>
-        <module>bukkit-nms-all</module>
+        <module>bukkit/bukkit-nms-all</module>
         <!-- CraftBukkit -->
-        <module>craftbukkit-common</module>
-        <module>craftbukkit-nms-v1_15_R1</module>
-        <module>craftbukkit-nms-v1_16_R1</module>
-        <module>craftbukkit-nms-v1_16_R2</module>
-        <module>craftbukkit-nms-v1_16_R3</module>
-        <module>craftbukkit-nms-v1_17_R1</module>
-        <module>craftbukkit-nms-v1_18_R1</module>
-        <module>craftbukkit-nms-v1_18_R2</module>
-        <module>craftbukkit-nms-v1_19_R1</module>
-        <module>craftbukkit-nms-v1_19_R2</module>
-        <module>craftbukkit-nms-v1_19_R3</module>
-        <module>craftbukkit-nms-v1_20_R1</module>
+        <module>bukkit/common</module>
+        <module>bukkit/v1_15_R1</module>
+        <module>bukkit/v1_16_R1</module>
+        <module>bukkit/v1_16_R2</module>
+        <module>bukkit/v1_16_R3</module>
+        <module>bukkit/v1_17_R1</module>
+        <module>bukkit/v1_18_R1</module>
+        <module>bukkit/v1_18_R2</module>
+        <module>bukkit/v1_19_R1</module>
+        <module>bukkit/v1_19_R2</module>
+        <module>bukkit/v1_19_R3</module>
+        <module>bukkit/v1_20_R2</module>
         <!-- Sponge (Temporarily disable) -->
         <!-- <module>sponge-common</module>
         <module>sponge-mcp-v1_12_R1</module>
