@@ -74,9 +74,7 @@ public class StarlightNMSHandler extends VanillaNMSHandler {
     // StarLightEngine
     private Method starEngine_setLightLevel;
     private Method starEngine_appendToIncreaseQueue;
-    private Method starEngine_appendToDecreaseQueue;
     private Method starEngine_performLightIncrease;
-    private Method starEngine_performLightDecrease;
     private Method starEngine_updateVisible;
     private Method starEngine_setupCaches;
     private Method starEngine_destroyCaches;
@@ -175,13 +173,13 @@ public class StarlightNMSHandler extends VanillaNMSHandler {
             starEngine_appendToIncreaseQueue = StarLightEngine.class.getDeclaredMethod("appendToIncreaseQueue",
                     long.class);
             starEngine_appendToIncreaseQueue.setAccessible(true);
-            starEngine_appendToDecreaseQueue = StarLightEngine.class.getDeclaredMethod("appendToDecreaseQueue",
+            Method starEngine_appendToDecreaseQueue = StarLightEngine.class.getDeclaredMethod("appendToDecreaseQueue",
                     long.class);
             starEngine_appendToDecreaseQueue.setAccessible(true);
             starEngine_performLightIncrease = StarLightEngine.class.getDeclaredMethod("performLightIncrease",
                     LightChunkGetter.class);
             starEngine_performLightIncrease.setAccessible(true);
-            starEngine_performLightDecrease = StarLightEngine.class.getDeclaredMethod("performLightDecrease",
+            Method starEngine_performLightDecrease = StarLightEngine.class.getDeclaredMethod("performLightDecrease",
                     LightChunkGetter.class);
             starEngine_performLightDecrease.setAccessible(true);
             starEngine_updateVisible = StarLightEngine.class.getDeclaredMethod("updateVisible", LightChunkGetter.class);

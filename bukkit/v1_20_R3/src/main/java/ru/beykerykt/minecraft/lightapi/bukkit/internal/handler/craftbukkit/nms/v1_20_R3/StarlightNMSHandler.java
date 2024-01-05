@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package ru.beykerykt.minecraft.lightapi.bukkit.internal.handler.craftbukkit.nms.v1_20_R1;
+package ru.beykerykt.minecraft.lightapi.bukkit.internal.handler.craftbukkit.nms.v1_20_R3;
 
 import ca.spottedleaf.starlight.common.light.BlockStarLightEngine;
 import ca.spottedleaf.starlight.common.light.SkyStarLightEngine;
@@ -38,8 +38,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.chunk.LightChunkGetter;
 import net.minecraft.world.level.lighting.LayerLightEventListener;
 import org.bukkit.World;
-
-import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import ru.beykerykt.minecraft.lightapi.bukkit.internal.BukkitPlatformImpl;
 import ru.beykerykt.minecraft.lightapi.common.api.ResultCode;
 import ru.beykerykt.minecraft.lightapi.common.api.engine.LightFlag;
