@@ -8,7 +8,7 @@ import net.minecraft.world.level.lighting.LightEngine;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-public class ReflectionMethods {
+public class Reflections {
     public static final Field LIGHT_ENGINE_STORAGE;
     public static final Field LIGHT_ENGINE_CHUNK_SOURCE;
     public static final Field TASK_MAILBOX;

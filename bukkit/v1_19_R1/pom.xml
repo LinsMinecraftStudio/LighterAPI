@@ -32,6 +32,13 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
+    <repositories>
+        <repository>
+            <id>codemc-nms</id>
+            <url>https://repo.codemc.io/repository/nms/</url>
+        </repository>
+    </repositories>
+
     <modelVersion>4.0.0</modelVersion>
     <artifactId>lightapi-craftbukkit-nms-v1_19_R1</artifactId>
 

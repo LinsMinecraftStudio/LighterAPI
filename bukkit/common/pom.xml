@@ -72,14 +72,6 @@
             <scope>compile</scope>
             <type>jar</type>
         </dependency>
-        <!-- Bukkit API -->
-        <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>${bukkit.version}</version>
-            <scope>provided</scope>
-            <type>jar</type>
-        </dependency>
         <!-- Spigot API -->
         <dependency>
             <groupId>org.spigotmc</groupId>
@@ -91,7 +83,6 @@
     </dependencies>
 
     <properties>
-        <bukkit.version>1.13.2-R0.1-SNAPSHOT</bukkit.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-jar-plugin.version>3.1.2</maven-jar-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -105,7 +96,7 @@
         </repository>
         <repository>
             <id>md_5-repo</id>
-            <url>http://repo.md-5.net/content/groups/public/</url>
+            <url>https://repo.md-5.net/content/groups/public/</url>
         </repository>
     </repositories>
 </project>

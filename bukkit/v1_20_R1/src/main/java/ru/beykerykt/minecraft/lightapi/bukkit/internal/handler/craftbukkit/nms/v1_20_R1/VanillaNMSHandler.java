@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package ru.beykerykt.minecraft.lightapi.bukkit.internal.handler.craftbukkit.nms.v1_20_R2;
+package ru.beykerykt.minecraft.lightapi.bukkit.internal.handler.craftbukkit.nms.v1_20_R1;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
@@ -38,7 +38,7 @@ import net.minecraft.world.level.lighting.LightEngine;
 import net.minecraft.world.level.lighting.SkyLightEngine;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 import ru.beykerykt.minecraft.lightapi.bukkit.internal.BukkitPlatformImpl;
@@ -59,7 +59,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 public class VanillaNMSHandler extends BaseNMSHandler {
-
     protected static RuntimeException toRuntimeException(Throwable e) {
         if (e instanceof RuntimeException) {
             return (RuntimeException) e;

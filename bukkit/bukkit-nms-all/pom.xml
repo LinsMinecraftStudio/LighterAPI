@@ -165,8 +165,24 @@
         </dependency>
         <!-- CraftBukkit NMS v1_19_R3 LightAPI -->
         <dependency>
-            <groupId>ru.beykerykt.minecraft</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>lightapi-craftbukkit-nms-v1_19_R3</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+            <type>jar</type>
+        </dependency>
+        <!-- CraftBukkit NMS v1_20_R1 LightAPI -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>lightapi-craftbukkit-nms-v1_20_R1</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+            <type>jar</type>
+        </dependency>
+        <!-- CraftBukkit NMS v1_20_R2 LightAPI -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>lightapi-craftbukkit-nms-v1_20_R2</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
             <type>jar</type>
