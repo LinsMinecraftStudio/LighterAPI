@@ -61,7 +61,7 @@ public final class LightAPI {
     /**
      * Must be called in onLoad();
      */
-    public static void prepare(IPlatformImpl impl) throws Exception {
+    public static void prepare(IPlatformImpl impl) {
         if (singleton == null && impl != null || !get().isInitialized()) {
             impl.info("Preparing LightAPI...");
             synchronized (LightAPI.class) {
@@ -153,10 +153,8 @@ public final class LightAPI {
                             callback.onSuccess(worldName, type, blockX, blockY, blockZ, lightlevel, stage);
                         } else {
                             LReason reason = LReason.UNKNOWN;
-                            switch (resultCode1) {
-                                case ResultCode.RECALCULATE_NO_CHANGES:
-                                    reason = LReason.NO_LIGHT_CHANGES;
-                                    break;
+                            if (resultCode1 == ResultCode.RECALCULATE_NO_CHANGES) {
+                                reason = LReason.NO_LIGHT_CHANGES;
                             }
                             callback.onFailed(worldName, type, blockX, blockY, blockZ, lightlevel, stage, reason);
                         }
@@ -194,10 +192,8 @@ public final class LightAPI {
                             callback.onSuccess(worldName, type, blockX, blockY, blockZ, 0, stage);
                         } else {
                             LReason reason = LReason.UNKNOWN;
-                            switch (resultCode1) {
-                                case ResultCode.RECALCULATE_NO_CHANGES:
-                                    reason = LReason.NO_LIGHT_CHANGES;
-                                    break;
+                            if (resultCode1 == ResultCode.RECALCULATE_NO_CHANGES) {
+                                reason = LReason.NO_LIGHT_CHANGES;
                             }
                             callback.onFailed(worldName, type, blockX, blockY, blockZ, 0, stage, reason);
                         }
