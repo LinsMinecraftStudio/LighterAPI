@@ -36,6 +36,13 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>lightapi-craftbukkit-nms-v1_15_R1</artifactId>
 
+    <repositories>
+        <repository>
+            <id>codemc-nms</id>
+            <url>https://repo.codemc.io/repository/nms/</url>
+        </repository>
+    </repositories>
+
     <build>
         <defaultGoal>clean package install</defaultGoal>
         <plugins>

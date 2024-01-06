@@ -125,7 +125,7 @@ public class BukkitPlugin extends JavaPlugin {
                     TextComponent developer = new TextComponent(ChatColor.AQUA + "Developers");
                     List<String> authors = getDescription().getAuthors();
                     StringBuilder authorsLine = new StringBuilder("none");
-                    if (authors.size() > 0) {
+                    if (!authors.isEmpty()) {
                         authorsLine = new StringBuilder(authors.get(0));
                         if (authors.size() > 1) {
                             for (int i = 1; i < authors.size() - 1; i++) {
@@ -163,18 +163,15 @@ public class BukkitPlugin extends JavaPlugin {
                     }
                 } else {
                     if (args[0] != null) {
-                        switch (args[0]) {
-                            case "debug":
-                                if (sender.hasPermission("lightapi.debug") || sender.isOp()) {
-                                    mImpl.toggleDebug();
-                                } else {
-                                    log(sender, ChatColor.RED + "You don't have permission!");
-                                }
-                                break;
-                            default:
-                                log(player, ChatColor.RED
-                                        + "Hmm... This command does not exist. Are you sure write correctly ?");
-                                break;
+                        if (args[0].equals("debug")) {
+                            if (sender.hasPermission("lightapi.debug") || sender.isOp()) {
+                                mImpl.toggleDebug();
+                            } else {
+                                log(sender, ChatColor.RED + "You don't have permission!");
+                            }
+                        } else {
+                            log(player, ChatColor.RED
+                                    + "Hmm... This command does not exist. Are you sure write correctly ?");
                         }
                     } else {
                         log(player,
@@ -202,7 +199,7 @@ public class BukkitPlugin extends JavaPlugin {
                             + "http://github.com/BeYkeRYkt/LightAPI/");
                     List<String> authors = getDescription().getAuthors();
                     StringBuilder authorsLine = new StringBuilder("none");
-                    if (authors.size() > 0) {
+                    if (!authors.isEmpty()) {
                         authorsLine = new StringBuilder(authors.get(0));
                         if (authors.size() > 1) {
                             for (int i = 1; i < authors.size() - 1; i++) {
@@ -220,18 +217,15 @@ public class BukkitPlugin extends JavaPlugin {
                     }
                 } else {
                     if (args[0] != null) {
-                        switch (args[0]) {
-                            case "debug":
-                                if (sender.hasPermission("lightapi.debug") || sender.isOp()) {
-                                    mImpl.toggleDebug();
-                                } else {
-                                    log(sender, ChatColor.RED + "You don't have permission!");
-                                }
-                                break;
-                            default:
-                                log(console, ChatColor.RED
-                                        + "Hmm... This command does not exist. Are you sure write correctly ?");
-                                break;
+                        if (args[0].equals("debug")) {
+                            if (sender.hasPermission("lightapi.debug") || sender.isOp()) {
+                                mImpl.toggleDebug();
+                            } else {
+                                log(sender, ChatColor.RED + "You don't have permission!");
+                            }
+                        } else {
+                            log(console, ChatColor.RED
+                                    + "Hmm... This command does not exist. Are you sure write correctly ?");
                         }
                     } else {
                         log(console,

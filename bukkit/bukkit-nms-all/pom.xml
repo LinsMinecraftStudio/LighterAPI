@@ -45,7 +45,7 @@
                 <version>${maven-assembly-plugin.version}</version>
                 <configuration>
                     <appendAssemblyId>false</appendAssemblyId>
-                    <finalName>LightAPI-${SERVER_API}-${project.version}</finalName>
+                    <finalName>LightAPI-${project.version}</finalName>
                 </configuration>
                 <executions>
                     <execution>
@@ -198,7 +198,6 @@
     </dependencies>
 
     <properties>
-        <SERVER_API>Bukkit</SERVER_API>
         <maven-assembly-plugin.version>3.1.1</maven-assembly-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

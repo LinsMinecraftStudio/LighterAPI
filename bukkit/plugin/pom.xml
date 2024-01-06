@@ -123,7 +123,6 @@
     </dependencies>
 
     <properties>
-        <SERVER_API>bukkit</SERVER_API>
         <bstats-bukkit.version>2.2.1</bstats-bukkit.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-jar-plugin.version>3.1.2</maven-jar-plugin.version>
@@ -139,7 +138,7 @@
         </repository>
         <repository>
             <id>md_5-repo</id>
-            <url>http://repo.md-5.net/content/groups/public/</url>
+            <url>https://repo.md-5.net/content/groups/public/</url>
         </repository>
     </repositories>
 </project>

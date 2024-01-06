@@ -28,10 +28,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
-
-import java.io.File;
-import java.util.UUID;
-
 import ru.beykerykt.minecraft.lightapi.bukkit.BukkitPlugin;
 import ru.beykerykt.minecraft.lightapi.bukkit.api.extension.IBukkitExtension;
 import ru.beykerykt.minecraft.lightapi.bukkit.internal.chunks.observer.sched.BukkitScheduledChunkObserverImpl;
@@ -41,7 +37,6 @@ import ru.beykerykt.minecraft.lightapi.bukkit.internal.handler.IHandler;
 import ru.beykerykt.minecraft.lightapi.bukkit.internal.handler.IHandlerFactory;
 import ru.beykerykt.minecraft.lightapi.bukkit.internal.service.BukkitBackgroundServiceImpl;
 import ru.beykerykt.minecraft.lightapi.bukkit.internal.utils.VersionUtil;
-import ru.beykerykt.minecraft.lightapi.common.Build;
 import ru.beykerykt.minecraft.lightapi.common.api.ResultCode;
 import ru.beykerykt.minecraft.lightapi.common.api.engine.EditPolicy;
 import ru.beykerykt.minecraft.lightapi.common.api.engine.LightFlag;
@@ -55,6 +50,9 @@ import ru.beykerykt.minecraft.lightapi.common.internal.chunks.observer.IChunkObs
 import ru.beykerykt.minecraft.lightapi.common.internal.engine.ILightEngine;
 import ru.beykerykt.minecraft.lightapi.common.internal.service.IBackgroundService;
 
+import java.io.File;
+import java.util.UUID;
+
 public class BukkitPlatformImpl implements IPlatformImpl, IBukkitExtension {
 
     private static final String DEFAULT_IMPL_NAME = "craftbukkit";
@@ -65,14 +63,11 @@ public class BukkitPlatformImpl implements IPlatformImpl, IBukkitExtension {
     private final String CONFIG_DEBUG = CONFIG_TITLE + ".debug";
     private final String CONFIG_ENABLE_METRICS = CONFIG_TITLE + ".enable-metrics";
     private final String CONFIG_ENABLE_COMPATIBILITY_MODE = CONFIG_TITLE + ".enable-compatibility-mode";
-    private final String CONFIG_FORCE_ENABLE_LEGACY = CONFIG_TITLE + ".force-enable-legacy";
     private final String CONFIG_SPECIFIC_HANDLER_PATH = CONFIG_TITLE + ".specific-handler-path";
     private final String CONFIG_HANDLERS_TITLE = CONFIG_TITLE + ".handlers";
-    private final int BSTATS_ID = 13051;
     private final BukkitPlugin mPlugin;
     private boolean DEBUG = false;
     private boolean isInit = false;
-    private boolean forceLegacy = false;
     private boolean compatibilityMode = false;
     private IHandler mHandler;
     private IChunkObserver mChunkObserver;
@@ -102,11 +97,6 @@ public class BukkitPlatformImpl implements IPlatformImpl, IBukkitExtension {
                 getConfig().set(CONFIG_DEBUG, false);
                 getConfig().set(CONFIG_ENABLE_METRICS, true);
                 getConfig().set(CONFIG_ENABLE_COMPATIBILITY_MODE, false);
-                if (Build.API_VERSION == Build.PREVIEW) { // only for PREVIEW build
-                    getConfig().set(CONFIG_FORCE_ENABLE_LEGACY, true);
-                } else {
-                    getConfig().set(CONFIG_FORCE_ENABLE_LEGACY, false);
-                }
                 getPlugin().saveConfig();
             }
         } catch (Exception e) {
@@ -200,6 +190,7 @@ public class BukkitPlatformImpl implements IPlatformImpl, IBukkitExtension {
     private void enableMetrics() {
         boolean enableMetrics = getConfig().getBoolean(CONFIG_ENABLE_METRICS);
         if (enableMetrics) {
+            int BSTATS_ID = 13051;
             new Metrics(getPlugin(), BSTATS_ID);
         }
         info("Metrics is " + (enableMetrics ? "en" : "dis") + "abled!");
@@ -217,12 +208,6 @@ public class BukkitPlatformImpl implements IPlatformImpl, IBukkitExtension {
 
     @Override
     public int initialization() {
-        // enable force legacy
-        forceLegacy = getConfig().getBoolean(CONFIG_FORCE_ENABLE_LEGACY);
-        if (forceLegacy) {
-            info("Force legacy is enabled");
-        }
-
         // init handler
         try {
             initHandler();
@@ -280,7 +265,7 @@ public class BukkitPlatformImpl implements IPlatformImpl, IBukkitExtension {
 
     @Override
     public void log(String msg) {
-        mPlugin.getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "<LightAPI>: " + ChatColor.WHITE + msg);
+        Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "<LightAPI>: " + ChatColor.WHITE + msg);
     }
 
     @Override
@@ -327,7 +312,7 @@ public class BukkitPlatformImpl implements IPlatformImpl, IBukkitExtension {
 
     @Override
     public boolean isWorldAvailable(String worldName) {
-        return getPlugin().getServer().getWorld(worldName) != null;
+        return Bukkit.getWorld(worldName) != null;
     }
 
     /* @hide */
@@ -399,13 +384,7 @@ public class BukkitPlatformImpl implements IPlatformImpl, IBukkitExtension {
 
     @Override
     public boolean isBackwardAvailable() {
-        boolean flag = Build.API_VERSION == Build.PREVIEW;
-        try {
-            Class.forName("ru.beykerykt.lightapi.LightAPI");
-            return forceLegacy || flag;
-        } catch (ClassNotFoundException ex) {
-            return false;
-        }
+        return false;
     }
 
     @Override

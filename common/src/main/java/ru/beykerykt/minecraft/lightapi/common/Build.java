@@ -29,13 +29,6 @@ import ru.beykerykt.minecraft.lightapi.common.internal.PlatformType;
  * Information about the current LightAPI build
  */
 public class Build {
-
-    /**
-     * ONLY FOR PREVIEW BUILD
-     */
-    @Deprecated
-    public static final int PREVIEW = 1;
-
     /**
      * Public version for users. May change during any changes in the API. The string should change
      * when common 'api' package is changed in from release to release.

@@ -1,11 +1,11 @@
-name: LightAPI
+name: LighterAPI
 main: ru.beykerykt.minecraft.lightapi.bukkit.BukkitPlugin
-version: ${SERVER_API}-${project.version} (build ${BUILD_NUMBER})
-description: Bukkit library for edit light levels
-api-version: 1.14
+version: ${project.version}
+description: Bukkit library for edit light levels(A fork of LightAPI)
+api-version: 1.15
 author: BeYkeRYkt
 authors: [ other contributors in GitHub ]
-website: https://github.com/BeYkeRYkt/LightAPI
+website: https://github.com/LinsMinecraftStudio/LighterAPI
 commands:
   lightapi:
     description: Main command

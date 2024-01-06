@@ -31,18 +31,6 @@ import java.util.regex.Pattern;
 
 public class VersionUtil {
 
-    public static String serverVersion() {
-        return Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
-    }
-
-    public static String serverName() {
-        return Bukkit.getVersion().split("-")[1];
-    }
-
-    public static String bukkitName() {
-        return Bukkit.getName();
-    }
-
     public static String bukkitVersion() {
         return (Bukkit.getBukkitVersion() + "-").split("-")[0];
     }
