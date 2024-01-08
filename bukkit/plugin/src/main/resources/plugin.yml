@@ -3,8 +3,7 @@ main: ru.beykerykt.minecraft.lightapi.bukkit.BukkitPlugin
 version: ${project.version}
 description: Bukkit library for edit light levels(A fork of LightAPI)
 api-version: 1.15
-author: BeYkeRYkt
-authors: [ other contributors in GitHub ]
+authors: [ BeYkeRYkt, Lijinhong11(mmmjjkx), Other contributors in GitHub ]
 website: https://github.com/LinsMinecraftStudio/LighterAPI
 commands:
   lightapi:

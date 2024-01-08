@@ -24,7 +24,6 @@
 package ru.beykerykt.minecraft.lightapi.common.api.engine;
 
 public enum RelightPolicy {
-
     /**
      * Recalculation of world lighting occurs immediately after the change
      * <p>

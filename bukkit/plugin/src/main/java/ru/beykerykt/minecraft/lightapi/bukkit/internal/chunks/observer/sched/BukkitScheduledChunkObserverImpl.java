@@ -119,10 +119,11 @@ public class BukkitScheduledChunkObserverImpl extends ScheduledChunkObserverImpl
 
     @Override
     protected boolean isChunkLoaded(String worldName, int chunkX, int chunkZ) {
-        if (!getPlatformImpl().isWorldAvailable(worldName)) {
+        World world = Bukkit.getWorld(worldName);
+        if (world == null) {
             return false;
         }
-        World world = Bukkit.getWorld(worldName);
+
         return world.isChunkLoaded(chunkX, chunkZ);
     }
 

@@ -60,7 +60,7 @@ public class BukkitPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         mLightAPI = LightAPI.get();
-        mExtension = (IBukkitExtension) LightAPI.get().getExtension();
+        mExtension = (IBukkitExtension) mLightAPI.getExtension();
         mHandler = mExtension.getHandler();
         mEntityTracker = new EntityTracker(this);
 

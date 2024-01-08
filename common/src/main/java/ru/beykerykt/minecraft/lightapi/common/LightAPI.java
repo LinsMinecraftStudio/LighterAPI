@@ -233,10 +233,6 @@ public final class LightAPI {
     public static void sendChanges(String worldName, int chunkX, int blockY, int chunkZ) {
     }
 
-    @Deprecated
-    public static void sendChanges(IChunkData chunkData) {
-    }
-
     public boolean isInitialized() {
         return getPluginImpl().isInitialized();
     }

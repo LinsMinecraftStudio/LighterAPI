@@ -57,9 +57,6 @@ public class BukkitScheduledLightEngineImpl extends ScheduledLightEngineImpl {
     private ScheduledFuture<?> mScheduledFuture;
     private int mTaskId = -1;
 
-    /**
-     * @hide
-     */
     public BukkitScheduledLightEngineImpl(BukkitPlatformImpl pluginImpl, IBackgroundService service, IHandler handler) {
         this(pluginImpl, service, RelightPolicy.DEFERRED, handler, 250, 250);
     }
@@ -111,8 +108,7 @@ public class BukkitScheduledLightEngineImpl extends ScheduledLightEngineImpl {
         String relightStrategyName = fc.getString(CONFIG_RELIGHT_STRATEGY);
         try {
             // TODO: move to throw exception
-            RelightPolicy relightPolicy = RelightPolicy.valueOf(relightStrategyName);
-            mRelightPolicy = relightPolicy;
+            mRelightPolicy = RelightPolicy.valueOf(relightStrategyName);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -123,8 +119,6 @@ public class BukkitScheduledLightEngineImpl extends ScheduledLightEngineImpl {
         this.mTaskId = getPlatformImpl().getPlugin().getServer().getScheduler().runTaskTimer(
                 getPlatformImpl().getPlugin(), this::onTickPenaltyTime, 0, 1).getTaskId();
 
-        // scheduler
-        // TODO: Make config (?)
         IScheduler scheduler = new PriorityScheduler(this,
                 (IScheduledChunkObserver) getPlatformImpl().getChunkObserver(), getBackgroundService(),
                 maxTimeMsPerTick);

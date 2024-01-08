@@ -1,11 +1,14 @@
-![Image](/images/logo5.png)
+![Image](https://i.imgur.com/w8g677T.png)  
+The icon is made by [TextCraft](https://textcraft.net/) and hosted to [imgur](https://textcraft.net/)  
+
+***Note: This isn't [IPECTER/LighterAPI](https://github.com/IPECTER/LighterAPI), DON'T CREATE ISSUES IN THAT REPO***
 
 # LighterAPI
 
 Bukkit Library for create invisible light source(A fork of LightAPI)  
-Supported versions: 1.15.2-1.20.4(not completed)
+Supported versions: 1.15.2-1.20.4
 
-- [CONTRIBUTORS](https://github.com/BeYkeRYkt/LightAPI/graphs/contributors)
+- [CONTRIBUTORS](https://github.com/LinsMinecraftStudio/LightAPI/graphs/contributors)
 
 # License
 
@@ -13,6 +16,7 @@ Supported versions: 1.15.2-1.20.4(not completed)
 The MIT License (MIT)
 
 Copyright (c) 2019 Vladimir Mikhailov <beykerykt@gmail.com>
+Copyright (c) 2024 Jinhong Li <tygfhk@outlook.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,3 +35,4 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+```
