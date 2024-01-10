@@ -23,10 +23,6 @@
  */
 package ru.beykerykt.minecraft.lightapi.common;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import ru.beykerykt.minecraft.lightapi.common.api.ResultCode;
 import ru.beykerykt.minecraft.lightapi.common.api.engine.EditPolicy;
 import ru.beykerykt.minecraft.lightapi.common.api.engine.LightFlag;
@@ -40,6 +36,8 @@ import ru.beykerykt.minecraft.lightapi.common.internal.chunks.observer.IChunkObs
 import ru.beykerykt.minecraft.lightapi.common.internal.engine.ILightEngine;
 import ru.beykerykt.minecraft.lightapi.common.internal.engine.sched.RequestFlag;
 import ru.beykerykt.minecraft.lightapi.common.internal.service.IBackgroundService;
+
+import java.util.UUID;
 
 /**
  * Main class for all platforms. Contains basic methods for all implementations.
@@ -200,37 +198,6 @@ public final class LightAPI {
                     }
                 });
         return resultCode == ResultCode.SUCCESS;
-    }
-
-    @Deprecated
-    public static List<IChunkData> collectChunks(String worldName, int blockX, int blockY, int blockZ, int lightlevel) {
-        // Let's not do this , all right?
-        return new ArrayList<>();
-    }
-
-    @Deprecated
-    public static List<IChunkData> collectChunks(String worldName, int blockX, int blockY, int blockZ) {
-        return collectChunks(worldName, blockX, blockY, blockZ, 15);
-    }
-
-    @Deprecated
-    public static void sendChanges(String worldName, int chunkX, int chunkZ, String playerName) {
-    }
-
-    @Deprecated
-    public static void sendChanges(String worldName, int chunkX, int blockY, int chunkZ, String playerName) {
-    }
-
-    @Deprecated
-    public static void sendChanges(IChunkData chunkData, String playerName) {
-    }
-
-    @Deprecated
-    public static void sendChanges(String worldName, int chunkX, int chunkZ) {
-    }
-
-    @Deprecated
-    public static void sendChanges(String worldName, int chunkX, int blockY, int chunkZ) {
     }
 
     public boolean isInitialized() {

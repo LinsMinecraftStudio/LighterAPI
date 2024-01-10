@@ -71,9 +71,7 @@ public class StarlightNMSHandler extends VanillaNMSHandler {
     // StarLightEngine
     private Method starEngine_setLightLevel;
     private Method starEngine_appendToIncreaseQueue;
-    private Method starEngine_appendToDecreaseQueue;
     private Method starEngine_performLightIncrease;
-    private Method starEngine_performLightDecrease;
     private Method starEngine_updateVisible;
     private Method starEngine_setupCaches;
     private Method starEngine_destroyCaches;
@@ -148,7 +146,7 @@ public class StarlightNMSHandler extends VanillaNMSHandler {
             task.run();
         } else {
             try {
-                CompletableFuture<Void> future = new CompletableFuture();
+                CompletableFuture<Void> future = new CompletableFuture<>();
                 ProcessorMailbox<Runnable> threadedMailbox =
                         (ProcessorMailbox<Runnable>) lightEngine_ThreadedMailbox.get(lightEngine);
                 threadedMailbox.tell(() -> {
@@ -172,13 +170,13 @@ public class StarlightNMSHandler extends VanillaNMSHandler {
             starEngine_appendToIncreaseQueue = StarLightEngine.class.getDeclaredMethod("appendToIncreaseQueue",
                     long.class);
             starEngine_appendToIncreaseQueue.setAccessible(true);
-            starEngine_appendToDecreaseQueue = StarLightEngine.class.getDeclaredMethod("appendToDecreaseQueue",
+            Method starEngine_appendToDecreaseQueue = StarLightEngine.class.getDeclaredMethod("appendToDecreaseQueue",
                     long.class);
             starEngine_appendToDecreaseQueue.setAccessible(true);
             starEngine_performLightIncrease = StarLightEngine.class.getDeclaredMethod("performLightIncrease",
                     LightChunkGetter.class);
             starEngine_performLightIncrease.setAccessible(true);
-            starEngine_performLightDecrease = StarLightEngine.class.getDeclaredMethod("performLightDecrease",
+            Method starEngine_performLightDecrease = StarLightEngine.class.getDeclaredMethod("performLightDecrease",
                     LightChunkGetter.class);
             starEngine_performLightDecrease.setAccessible(true);
             starEngine_updateVisible = StarLightEngine.class.getDeclaredMethod("updateVisible", LightChunkGetter.class);
@@ -204,18 +202,6 @@ public class StarlightNMSHandler extends VanillaNMSHandler {
     @Override
     public LightEngineType getLightEngineType() {
         return LightEngineType.STARLIGHT;
-    }
-
-    @Override
-    public boolean isLightingSupported(World world, int lightFlags) {
-        ServerLevel worldServer = ((CraftWorld) world).getHandle();
-        ThreadedLevelLightEngine lightEngine = worldServer.getChunkSource().getLightEngine();
-        if (FlagUtils.isFlagSet(lightFlags, LightFlag.SKY_LIGHTING)) {
-            return lightEngine.getLayerListener(LightLayer.SKY) != null;
-        } else if (FlagUtils.isFlagSet(lightFlags, LightFlag.BLOCK_LIGHTING)) {
-            return lightEngine.getLayerListener(LightLayer.BLOCK) != null;
-        }
-        return false;
     }
 
     @Override
@@ -317,22 +303,22 @@ public class StarlightNMSHandler extends VanillaNMSHandler {
 
         try {
             StarLightInterface starLightInterface = (StarLightInterface) starInterface.get(lightEngine);
-            Iterator blockIt = blockQueueMap.entrySet().iterator();
+            Iterator<Map.Entry<ChunkPos, Set<LightPos>>> blockIt = blockQueueMap.entrySet().iterator();
             while (blockIt.hasNext()) {
                 BlockStarLightEngine bsle = (BlockStarLightEngine) starInterface_getBlockLightEngine.invoke(
                         starLightInterface);
-                Map.Entry<ChunkPos, Set<LightPos>> pair = (Map.Entry<ChunkPos, Set<LightPos>>) blockIt.next();
+                Map.Entry<ChunkPos, Set<LightPos>> pair = blockIt.next();
                 ChunkPos chunkCoordIntPair = pair.getKey();
                 Set<LightPos> lightPoints = pair.getValue();
                 addTaskToQueue(worldServer, starLightInterface, bsle, chunkCoordIntPair, lightPoints);
                 blockIt.remove();
             }
 
-            Iterator skyIt = skyQueueMap.entrySet().iterator();
+            Iterator<Map.Entry<ChunkPos, Set<LightPos>>> skyIt = skyQueueMap.entrySet().iterator();
             while (skyIt.hasNext()) {
                 SkyStarLightEngine ssle = (SkyStarLightEngine) starInterface_getSkyLightEngine.invoke(
                         starLightInterface);
-                Map.Entry<ChunkPos, Set<LightPos>> pair = (Map.Entry<ChunkPos, Set<LightPos>>) skyIt.next();
+                Map.Entry<ChunkPos, Set<LightPos>> pair = skyIt.next();
                 ChunkPos chunkCoordIntPair = pair.getKey();
                 Set<LightPos> lightPoints = pair.getValue();
                 addTaskToQueue(worldServer, starLightInterface, ssle, chunkCoordIntPair, lightPoints);

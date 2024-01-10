@@ -74,8 +74,6 @@ public class VanillaNMSHandler extends BaseNMSHandler {
     private Method lightEngineStorage_d;
     private Method lightEngineGraph_a;
 
-    private Field serverThreadQueue;
-
     private static RuntimeException toRuntimeException(Throwable e) {
         if (e instanceof RuntimeException) {
             return (RuntimeException) e;
@@ -167,7 +165,7 @@ public class VanillaNMSHandler extends BaseNMSHandler {
     public void onInitialization(BukkitPlatformImpl impl) throws Exception {
         super.onInitialization(impl);
         try {
-            serverThreadQueue = ChunkProviderServer.class.getDeclaredField("serverThreadQueue");
+            Field serverThreadQueue = ChunkProviderServer.class.getDeclaredField("serverThreadQueue");
             serverThreadQueue.setAccessible(true);
 
             threadedMailbox_DoLoopStep = ThreadedMailbox.class.getDeclaredMethod("f");

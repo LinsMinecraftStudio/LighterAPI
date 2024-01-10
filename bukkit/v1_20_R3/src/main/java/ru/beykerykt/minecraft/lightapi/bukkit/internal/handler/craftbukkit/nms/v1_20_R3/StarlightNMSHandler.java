@@ -46,7 +46,6 @@ import ru.beykerykt.minecraft.lightapi.common.internal.engine.LightEngineType;
 import ru.beykerykt.minecraft.lightapi.common.internal.utils.FlagUtils;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -61,11 +60,7 @@ public class StarlightNMSHandler extends VanillaNMSHandler {
     private final long FLAG_HAS_SIDED_TRANSPARENT_BLOCKS = Long.MIN_VALUE;
     private final Map<ChunkPos, Set<LightPos>> blockQueueMap = new ConcurrentHashMap<>();
     private final Map<ChunkPos, Set<LightPos>> skyQueueMap = new ConcurrentHashMap<>();
-    // StarLightInterface
-    private Field starInterface;
     private Field starInterface_coordinateOffset;
-    private Method starInterface_getBlockLightEngine;
-    private Method starInterface_getSkyLightEngine;
     // StarLightEngine
     private Method starEngine_setLightLevel;
     private Method starEngine_appendToIncreaseQueue;
@@ -184,12 +179,7 @@ public class StarlightNMSHandler extends VanillaNMSHandler {
             starEngine_setupCaches.setAccessible(true);
             starEngine_destroyCaches = StarLightEngine.class.getDeclaredMethod("destroyCaches");
             starEngine_destroyCaches.setAccessible(true);
-            starInterface = ThreadedLevelLightEngine.class.getDeclaredField("theLightEngine");
-            starInterface.setAccessible(true);
-            starInterface_getBlockLightEngine = StarLightInterface.class.getDeclaredMethod("getBlockLightEngine");
-            starInterface_getBlockLightEngine.setAccessible(true);
-            starInterface_getSkyLightEngine = StarLightInterface.class.getDeclaredMethod("getSkyLightEngine");
-            starInterface_getSkyLightEngine.setAccessible(true);
+            // StarLightInterface
             starInterface_coordinateOffset = StarLightEngine.class.getDeclaredField("coordinateOffset");
             starInterface_coordinateOffset.setAccessible(true);
         } catch (Exception e) {
@@ -226,7 +216,7 @@ public class StarlightNMSHandler extends VanillaNMSHandler {
                     LayerLightEventListener lele = lightEngine.getLayerListener(LightLayer.BLOCK);
                     if (finalLightLevel == 0) {
                         try {
-                            StarLightInterface starLightInterface = (StarLightInterface) starInterface.get(lightEngine);
+                            StarLightInterface starLightInterface = lightEngine.theLightEngine;
                             starLightInterface.blockChange(position);
                         } catch (Exception ex) {
                             ex.printStackTrace();
@@ -255,7 +245,7 @@ public class StarlightNMSHandler extends VanillaNMSHandler {
                     LayerLightEventListener lele = lightEngine.getLayerListener(LightLayer.SKY);
                     if (finalLightLevel == 0) {
                         try {
-                            StarLightInterface starLightInterface = (StarLightInterface) starInterface.get(lightEngine);
+                            StarLightInterface starLightInterface = lightEngine.theLightEngine;
                             starLightInterface.blockChange(position);
                         } catch (Exception ex) {
                             ex.printStackTrace();
@@ -304,36 +294,29 @@ public class StarlightNMSHandler extends VanillaNMSHandler {
             return ResultCode.RECALCULATE_NO_CHANGES;
         }
 
-        try {
-            StarLightInterface starLightInterface = (StarLightInterface) starInterface.get(lightEngine);
-            Iterator<Map.Entry<ChunkPos, Set<LightPos>>> blockIt = blockQueueMap.entrySet().iterator();
-            while (blockIt.hasNext()) {
-                BlockStarLightEngine bsle = (BlockStarLightEngine) starInterface_getBlockLightEngine.invoke(
-                        starLightInterface);
-                Map.Entry<ChunkPos, Set<LightPos>> pair = blockIt.next();
-                ChunkPos chunkCoordIntPair = pair.getKey();
-                Set<LightPos> lightPoints = pair.getValue();
-                addTaskToQueue(worldServer, starLightInterface, bsle, chunkCoordIntPair, lightPoints);
-                blockIt.remove();
-            }
+        StarLightInterface starLightInterface = lightEngine.theLightEngine;
+        Iterator<Map.Entry<ChunkPos, Set<LightPos>>> blockIt = blockQueueMap.entrySet().iterator();
+        while (blockIt.hasNext()) {
+            BlockStarLightEngine bsle = starLightInterface.getBlockLightEngine();
+            Map.Entry<ChunkPos, Set<LightPos>> pair = blockIt.next();
+            ChunkPos chunkCoordIntPair = pair.getKey();
+            Set<LightPos> lightPoints = pair.getValue();
+            addTaskToQueue(worldServer, starLightInterface, bsle, chunkCoordIntPair, lightPoints);
+            blockIt.remove();
+        }
 
-            Iterator<Map.Entry<ChunkPos, Set<LightPos>>> skyIt = skyQueueMap.entrySet().iterator();
-            while (skyIt.hasNext()) {
-                SkyStarLightEngine ssle = (SkyStarLightEngine) starInterface_getSkyLightEngine.invoke(
-                        starLightInterface);
-                Map.Entry<ChunkPos, Set<LightPos>> pair = skyIt.next();
-                ChunkPos chunkCoordIntPair = pair.getKey();
-                Set<LightPos> lightPoints = pair.getValue();
-                addTaskToQueue(worldServer, starLightInterface, ssle, chunkCoordIntPair, lightPoints);
-                skyIt.remove();
-            }
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+        Iterator<Map.Entry<ChunkPos, Set<LightPos>>> skyIt = skyQueueMap.entrySet().iterator();
+        while (skyIt.hasNext()) {
+            SkyStarLightEngine ssle = starLightInterface.getSkyLightEngine();
+            Map.Entry<ChunkPos, Set<LightPos>> pair = skyIt.next();
+            ChunkPos chunkCoordIntPair = pair.getKey();
+            Set<LightPos> lightPoints = pair.getValue();
+            addTaskToQueue(worldServer, starLightInterface, ssle, chunkCoordIntPair, lightPoints);
+            skyIt.remove();
         }
 
         executeSync(lightEngine, () -> {
             try {
-                StarLightInterface starLightInterface = (StarLightInterface) starInterface.get(lightEngine);
                 starLightInterface.propagateChanges();
             } catch (Exception ex) {
                 ex.printStackTrace();
