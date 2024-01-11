@@ -1,5 +1,5 @@
-![Image](https://i.imgur.com/w8g677T.png)  
-The icon is made by [TextCraft](https://textcraft.net/) and hosted to [imgur](https://textcraft.net/)  
+![Image](https://i.imgur.com/RxOOx0q.png)  
+The icon is made by [TextCraft](https://textcraft.net/) and hosted to [imgur](https://i.imgur.com/RxOOx0q.png)  
 
 ***Note: This isn't [IPECTER/LighterAPI](https://github.com/IPECTER/LighterAPI), DON'T CREATE ISSUES IN THAT REPO***
 
