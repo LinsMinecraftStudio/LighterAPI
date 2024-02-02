@@ -50,6 +50,7 @@ import org.bukkit.event.world.WorldUnloadEvent;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -159,6 +160,7 @@ public class VanillaNMSHandler extends BaseNMSHandler {
 
     private IChunkData createBitChunkData(String worldName, int chunkX, int chunkZ) {
         World world = Bukkit.getWorld(worldName);
+        if (world == null) return null;
         WorldServer worldServer = ((CraftWorld) world).getHandle();
         final LightEngineThreaded lightEngine = worldServer.getChunkProvider().getLightEngine();
         int bottom = lightEngine.c();
@@ -388,13 +390,15 @@ public class VanillaNMSHandler extends BaseNMSHandler {
     @Override
     public List<IChunkData> collectChunkSections(World world, int blockX, int blockY, int blockZ, int lightLevel,
             int lightFlags) {
+
+        if (world == null) {
+            return new ArrayList<>();
+        }
         WorldServer worldServer = ((CraftWorld) world).getHandle();
         List<IChunkData> list = Lists.newArrayList();
         int finalLightLevel = lightLevel < 0 ? 0 : Math.min(lightLevel, 15);
 
-        if (world == null) {
-            return list;
-        }
+
 
         for (int dX = -1; dX <= 1; dX++) {
             int lightLevelX = finalLightLevel - getDeltaLight(blockX & 15, dX);
