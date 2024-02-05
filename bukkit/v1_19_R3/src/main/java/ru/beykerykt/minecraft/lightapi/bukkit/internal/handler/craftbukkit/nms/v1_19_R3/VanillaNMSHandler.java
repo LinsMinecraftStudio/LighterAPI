@@ -23,6 +23,7 @@
  */
 package ru.beykerykt.minecraft.lightapi.bukkit.internal.handler.craftbukkit.nms.v1_19_R3;
 
+import io.papermc.paper.adventure.PaperAdventure;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.network.protocol.game.ClientboundLightUpdatePacket;
@@ -41,6 +42,7 @@ import net.minecraft.world.level.lighting.SkyLightEngine;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_19_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_19_R3.CraftWorld;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
@@ -65,13 +67,22 @@ import ru.beykerykt.minecraft.lightapi.common.internal.engine.LightEngineVersion
 import ru.beykerykt.minecraft.lightapi.common.internal.utils.FlagUtils;
 
 public class VanillaNMSHandler extends BaseNMSHandler {
-
+    private boolean lightEngine_Paper;
     protected Field lightEngine_ThreadedMailbox;
     private Field threadedMailbox_State;
     private Method threadedMailbox_DoLoopStep;
     private Field lightEngineLayer_d;
     private Method lightEngineStorage_d;
     private Method lightEngineGraph_a;
+
+    public VanillaNMSHandler() {
+        try {
+            Class.forName("com.destroystokyo.paper.ParticleBuilder");
+            lightEngine_Paper = true;
+        } catch (Exception e) {
+            lightEngine_Paper = false;
+        }
+    }
 
     protected static RuntimeException toRuntimeException(Throwable e) {
         if (e instanceof RuntimeException) {
@@ -89,52 +100,58 @@ public class VanillaNMSHandler extends BaseNMSHandler {
 
     protected void executeSync(ThreadedLevelLightEngine lightEngine, Runnable task) {
         try {
-            // ##### STEP 1: Pause light engine mailbox to process its tasks. #####
-            ProcessorMailbox<Runnable> threadedMailbox = (ProcessorMailbox<Runnable>) lightEngine_ThreadedMailbox.get(
-                    lightEngine);
-            // State flags bit mask:
-            // 0x0001 - Closing flag (ThreadedMailbox is closing if non zero).
-            // 0x0002 - Busy flag (ThreadedMailbox performs a task from queue if non zero).
-            AtomicInteger stateFlags = (AtomicInteger) threadedMailbox_State.get(threadedMailbox);
-            int flags; // to hold values from stateFlags
-            long timeToWait = -1;
-            // Trying to set bit 1 in state bit mask when it is not set yet.
-            // This will break the loop in other thread where light engine mailbox processes the taks.
-            while (!stateFlags.compareAndSet(flags = stateFlags.get() & ~2, flags | 2)) {
-                if ((flags & 1) != 0) {
-                    // ThreadedMailbox is closing. The light engine mailbox may also stop processing tasks.
-                    // The light engine mailbox can be close due to server shutdown or unloading (closing) the
-                    // world.
-                    // I am not sure is it unsafe to process our tasks while the world is closing is closing,
-                    // but will try it (one can throw exception here if it crashes the server).
-                    if (timeToWait == -1) {
-                        // Try to wait 3 seconds until light engine mailbox is busy.
-                        timeToWait = System.currentTimeMillis() + 3 * 1000;
-                        getPlatformImpl().debug("ThreadedMailbox is closing. Will wait...");
-                    } else if (System.currentTimeMillis() >= timeToWait) {
-                        throw new RuntimeException("Failed to enter critical section while ThreadedMailbox is closing");
-                    }
-                    try {
-                        Thread.sleep(50);
-                    } catch (InterruptedException ignored) {
+
+            if (!lightEngine_Paper) {
+                //##### STEP 1: Pause light engine mailbox to process its tasks. #####
+
+                ProcessorMailbox<Runnable> threadedMailbox = (ProcessorMailbox<Runnable>) lightEngine_ThreadedMailbox.get(
+                        lightEngine);
+                // State flags bit mask:
+                // 0x0001 - Closing flag (ThreadedMailbox is closing if non zero).
+                // 0x0002 - Busy flag (ThreadedMailbox performs a task from queue if non zero).
+                AtomicInteger stateFlags = (AtomicInteger) threadedMailbox_State.get(threadedMailbox);
+
+                int flags; // to hold values from stateFlags
+                long timeToWait = -1;
+                // Trying to set bit 1 in state bit mask when it is not set yet.
+                // This will break the loop in other thread where light engine mailbox processes the taks.
+                while (!stateFlags.compareAndSet(flags = stateFlags.get() & ~2, flags | 2)) {
+                    if ((flags & 1) != 0) {
+                        // ThreadedMailbox is closing. The light engine mailbox may also stop processing tasks.
+                        // The light engine mailbox can be close due to server shutdown or unloading (closing) the
+                        // world.
+                        // I am not sure is it unsafe to process our tasks while the world is closing is closing,
+                        // but will try it (one can throw exception here if it crashes the server).
+                        if (timeToWait == -1) {
+                            // Try to wait 3 seconds until light engine mailbox is busy.
+                            timeToWait = System.currentTimeMillis() + 3 * 1000;
+                            getPlatformImpl().debug("ThreadedMailbox is closing. Will wait...");
+                        } else if (System.currentTimeMillis() >= timeToWait) {
+                            throw new RuntimeException("Failed to enter critical section while ThreadedMailbox is closing");
+                        }
+                        try {
+                            Thread.sleep(50);
+                        } catch (InterruptedException ignored) {
+                        }
                     }
                 }
-            }
-            try {
-                // ##### STEP 2: Safely running the task while the mailbox process is stopped. #####
+                try {
+                    // ##### STEP 2: Safely running the task while the mailbox process is stopped. #####
+                    task.run();
+                } finally {
+                    // STEP 3: ##### Continue light engine mailbox to process its tasks. #####
+                    // Firstly: Clearing busy flag to allow ThreadedMailbox to use it for running light engine
+                    // tasks.
+                    while (!stateFlags.compareAndSet(flags = stateFlags.get(), flags & ~2))
+                        ;
+                    // Secondly: IMPORTANT! The main loop of ThreadedMailbox was broken. Not completed tasks may
+                    // still be
+                    // in the queue. Therefore, it is important to start the loop again to process tasks from
+                    // the queue.
+                    // Otherwise, the main server thread may be frozen due to tasks stuck in the queue.
+                    threadedMailbox_DoLoopStep.invoke(threadedMailbox);
+                }
                 task.run();
-            } finally {
-                // STEP 3: ##### Continue light engine mailbox to process its tasks. #####
-                // Firstly: Clearing busy flag to allow ThreadedMailbox to use it for running light engine
-                // tasks.
-                while (!stateFlags.compareAndSet(flags = stateFlags.get(), flags & ~2))
-                    ;
-                // Secondly: IMPORTANT! The main loop of ThreadedMailbox was broken. Not completed tasks may
-                // still be
-                // in the queue. Therefore, it is important to start the loop again to process tasks from
-                // the queue.
-                // Otherwise, the main server thread may be frozen due to tasks stuck in the queue.
-                threadedMailbox_DoLoopStep.invoke(threadedMailbox);
             }
         } catch (InvocationTargetException e) {
             throw toRuntimeException(e.getCause());
@@ -172,8 +189,11 @@ public class VanillaNMSHandler extends BaseNMSHandler {
             threadedMailbox_DoLoopStep.setAccessible(true);
             threadedMailbox_State = ProcessorMailbox.class.getDeclaredField("d"); // status
             threadedMailbox_State.setAccessible(true);
-            lightEngine_ThreadedMailbox = ThreadedLevelLightEngine.class.getDeclaredField("e"); // taskMailbox
-            lightEngine_ThreadedMailbox.setAccessible(true);
+
+            if (!lightEngine_Paper) {
+                lightEngine_ThreadedMailbox = ThreadedLevelLightEngine.class.getDeclaredField("e"); // taskMailbox
+                lightEngine_ThreadedMailbox.setAccessible(true);
+            }
 
             lightEngineLayer_d = LayerLightEngine.class.getDeclaredField("d"); // storage
             lightEngineLayer_d.setAccessible(true);
@@ -385,13 +405,13 @@ public class VanillaNMSHandler extends BaseNMSHandler {
     @Override
     public List<IChunkData> collectChunkSections(World world, int blockX, int blockY, int blockZ, int lightLevel,
                                                  int lightFlags) {
-        ServerLevel worldServer = ((CraftWorld) world).getHandle();
         List<IChunkData> list = new ArrayList<>();
-        int finalLightLevel = lightLevel < 0 ? 0 : Math.min(lightLevel, 15);
-
         if (world == null) {
             return list;
         }
+        ServerLevel worldServer = ((CraftWorld) world).getHandle();
+
+        int finalLightLevel = lightLevel < 0 ? 0 : Math.min(lightLevel, 15);
 
         for (int dX = -1; dX <= 1; dX++) {
             int lightLevelX = finalLightLevel - getDeltaLight(blockX & 15, dX);

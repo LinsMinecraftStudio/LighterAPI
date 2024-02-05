@@ -92,6 +92,7 @@ public class BukkitPlugin extends JavaPlugin {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (command.getName().equalsIgnoreCase("lightapi")) {
             if (sender instanceof Player) {

@@ -37,6 +37,7 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.chunk.LightChunkGetter;
 import net.minecraft.world.level.lighting.LayerLightEventListener;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_19_R3.CraftWorld;
 import ru.beykerykt.minecraft.lightapi.bukkit.internal.BukkitPlatformImpl;
@@ -53,6 +54,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 
 public class StarlightNMSHandler extends VanillaNMSHandler {
 
@@ -140,16 +142,9 @@ public class StarlightNMSHandler extends VanillaNMSHandler {
             task.run();
         } else {
             try {
-                CompletableFuture<Void> future = new CompletableFuture<>();
-                ProcessorMailbox<Runnable> threadedMailbox =
-                        (ProcessorMailbox<Runnable>) lightEngine_ThreadedMailbox.get(lightEngine);
-                threadedMailbox.tell(() -> {
-                    task.run();
-                    future.complete(null);
-                });
-                future.join();
-            } catch (IllegalAccessException e) {
-                throw toRuntimeException(e);
+                CompletableFuture.runAsync(task).get();
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
             }
         }
     }
