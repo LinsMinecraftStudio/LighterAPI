@@ -59,6 +59,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 public class VanillaNMSHandler extends BaseNMSHandler {
+    private boolean lightEngine_Paper;
+
     protected static RuntimeException toRuntimeException(Throwable e) {
         if (e instanceof RuntimeException) {
             return (RuntimeException) e;
@@ -69,59 +71,73 @@ public class VanillaNMSHandler extends BaseNMSHandler {
                 e.getMessage()), e);
     }
 
+    public VanillaNMSHandler() {
+        try {
+            Class.forName("com.destroystokyo.paper.ParticleBuilder");
+            lightEngine_Paper = true;
+        } catch (Exception e) {
+            lightEngine_Paper = false;
+        }
+    }
+
     private int getDeltaLight(int x, int dx) {
         return (((x ^ ((-dx >> 4) & 15)) + 1) & (-(dx & 1)));
     }
 
     protected void executeSync(ThreadedLevelLightEngine lightEngine, Runnable task) {
         try {
-            // ##### STEP 1: Pause light engine mailbox to process its tasks. #####
-            ProcessorMailbox<Runnable> threadedMailbox = (ProcessorMailbox<Runnable>) Reflections.TASK_MAILBOX.get(
-                    lightEngine);
-            // State flags bit mask:
-            // 0x0001 - Closing flag (ThreadedMailbox is closing if non zero).
-            // 0x0002 - Busy flag (ThreadedMailbox performs a task from queue if non zero).
-            AtomicInteger stateFlags = (AtomicInteger) Reflections.TASK_MAILBOX_STATUS.get(threadedMailbox);
-            int flags; // to hold values from stateFlags
-            long timeToWait = -1;
-            // Trying to set bit 1 in state bit mask when it is not set yet.
-            // This will break the loop in other thread where light engine mailbox processes the taks.
-            while (!stateFlags.compareAndSet(flags = stateFlags.get() & ~2, flags | 2)) {
-                if ((flags & 1) != 0) {
-                    // ThreadedMailbox is closing. The light engine mailbox may also stop processing tasks.
-                    // The light engine mailbox can be close due to server shutdown or unloading (closing) the
-                    // world.
-                    // I am not sure is it unsafe to process our tasks while the world is closing is closing,
-                    // but will try it (one can throw exception here if it crashes the server).
-                    if (timeToWait == -1) {
-                        // Try to wait 3 seconds until light engine mailbox is busy.
-                        timeToWait = System.currentTimeMillis() + 3 * 1000;
-                        getPlatformImpl().debug("ThreadedMailbox is closing. Will wait...");
-                    } else if (System.currentTimeMillis() >= timeToWait) {
-                        throw new RuntimeException("Failed to enter critical section while ThreadedMailbox is closing");
-                    }
-                    try {
-                        Thread.sleep(50);
-                    } catch (InterruptedException ignored) {
+            if (!lightEngine_Paper) {
+                //##### STEP 1: Pause light engine mailbox to process its tasks. #####
+
+                ProcessorMailbox<Runnable> threadedMailbox = (ProcessorMailbox<Runnable>) Reflections.TASK_MAILBOX.get(
+                        lightEngine);
+                // State flags bit mask:
+                // 0x0001 - Closing flag (ThreadedMailbox is closing if non zero).
+                // 0x0002 - Busy flag (ThreadedMailbox performs a task from queue if non zero).
+                AtomicInteger stateFlags = (AtomicInteger) Reflections.TASK_MAILBOX_STATUS.get(threadedMailbox);
+
+                int flags; // to hold values from stateFlags
+                long timeToWait = -1;
+                // Trying to set bit 1 in state bit mask when it is not set yet.
+                // This will break the loop in other thread where light engine mailbox processes the taks.
+                while (!stateFlags.compareAndSet(flags = stateFlags.get() & ~2, flags | 2)) {
+                    if ((flags & 1) != 0) {
+                        // ThreadedMailbox is closing. The light engine mailbox may also stop processing tasks.
+                        // The light engine mailbox can be close due to server shutdown or unloading (closing) the
+                        // world.
+                        // I am not sure is it unsafe to process our tasks while the world is closing is closing,
+                        // but will try it (one can throw exception here if it crashes the server).
+                        if (timeToWait == -1) {
+                            // Try to wait 3 seconds until light engine mailbox is busy.
+                            timeToWait = System.currentTimeMillis() + 3 * 1000;
+                            getPlatformImpl().debug("ThreadedMailbox is closing. Will wait...");
+                        } else if (System.currentTimeMillis() >= timeToWait) {
+                            throw new RuntimeException("Failed to enter critical section while ThreadedMailbox is closing");
+                        }
+                        try {
+                            Thread.sleep(50);
+                        } catch (InterruptedException ignored) {
+                        }
                     }
                 }
+                try {
+                    // ##### STEP 2: Safely running the task while the mailbox process is stopped. #####
+                    task.run();
+                } finally {
+                    // STEP 3: ##### Continue light engine mailbox to process its tasks. #####
+                    // Firstly: Clearing busy flag to allow ThreadedMailbox to use it for running light engine
+                    // tasks.
+                    while (!stateFlags.compareAndSet(flags = stateFlags.get(), flags & ~2))
+                        ;
+                    // Secondly: IMPORTANT! The main loop of ThreadedMailbox was broken. Not completed tasks may
+                    // still be
+                    // in the queue. Therefore, it is important to start the loop again to process tasks from
+                    // the queue.
+                    // Otherwise, the main server thread may be frozen due to tasks stuck in the queue.
+                    Reflections.REGISTER_FOR_EXECUTION.invoke(threadedMailbox);
+                }
             }
-            try {
-                // ##### STEP 2: Safely running the task while the mailbox process is stopped. #####
-                task.run();
-            } finally {
-                // STEP 3: ##### Continue light engine mailbox to process its tasks. #####
-                // Firstly: Clearing busy flag to allow ThreadedMailbox to use it for running light engine
-                // tasks.
-                while (!stateFlags.compareAndSet(flags = stateFlags.get(), flags & ~2))
-                    ;
-                // Secondly: IMPORTANT! The main loop of ThreadedMailbox was broken. Not completed tasks may
-                // still be
-                // in the queue. Therefore, it is important to start the loop again to process tasks from
-                // the queue.
-                // Otherwise, the main server thread may be frozen due to tasks stuck in the queue.
-                Reflections.REGISTER_FOR_EXECUTION.invoke(threadedMailbox);
-            }
+            task.run();
         } catch (InvocationTargetException e) {
             throw toRuntimeException(e.getCause());
         } catch (IllegalAccessException e) {

@@ -23,7 +23,6 @@
  */
 package ru.beykerykt.minecraft.lightapi.bukkit.internal.handler.craftbukkit.nms.v1_19_R3;
 
-import io.papermc.paper.adventure.PaperAdventure;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.network.protocol.game.ClientboundLightUpdatePacket;
@@ -34,28 +33,12 @@ import net.minecraft.util.thread.ProcessorMailbox;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.lighting.BlockLightEngine;
-import net.minecraft.world.level.lighting.DynamicGraphMinFixedPoint;
-import net.minecraft.world.level.lighting.LayerLightEngine;
-import net.minecraft.world.level.lighting.LayerLightSectionStorage;
-import net.minecraft.world.level.lighting.SkyLightEngine;
-
+import net.minecraft.world.level.lighting.*;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_19_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_19_R3.CraftWorld;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Stream;
-
 import ru.beykerykt.minecraft.lightapi.bukkit.internal.BukkitPlatformImpl;
 import ru.beykerykt.minecraft.lightapi.bukkit.internal.handler.craftbukkit.nms.BaseNMSHandler;
 import ru.beykerykt.minecraft.lightapi.common.api.ResultCode;
@@ -65,6 +48,15 @@ import ru.beykerykt.minecraft.lightapi.common.internal.chunks.data.IChunkData;
 import ru.beykerykt.minecraft.lightapi.common.internal.engine.LightEngineType;
 import ru.beykerykt.minecraft.lightapi.common.internal.engine.LightEngineVersion;
 import ru.beykerykt.minecraft.lightapi.common.internal.utils.FlagUtils;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 public class VanillaNMSHandler extends BaseNMSHandler {
     private boolean lightEngine_Paper;
@@ -100,7 +92,6 @@ public class VanillaNMSHandler extends BaseNMSHandler {
 
     protected void executeSync(ThreadedLevelLightEngine lightEngine, Runnable task) {
         try {
-
             if (!lightEngine_Paper) {
                 //##### STEP 1: Pause light engine mailbox to process its tasks. #####
 
@@ -151,8 +142,8 @@ public class VanillaNMSHandler extends BaseNMSHandler {
                     // Otherwise, the main server thread may be frozen due to tasks stuck in the queue.
                     threadedMailbox_DoLoopStep.invoke(threadedMailbox);
                 }
-                task.run();
             }
+            task.run();
         } catch (InvocationTargetException e) {
             throw toRuntimeException(e.getCause());
         } catch (IllegalAccessException e) {

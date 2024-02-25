@@ -53,6 +53,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 
 public class StarlightNMSHandler extends VanillaNMSHandler {
 
@@ -140,16 +141,9 @@ public class StarlightNMSHandler extends VanillaNMSHandler {
             task.run();
         } else {
             try {
-                CompletableFuture<Void> future = new CompletableFuture<>();
-                ProcessorMailbox<Runnable> threadedMailbox =
-                        (ProcessorMailbox<Runnable>) Reflections.TASK_MAILBOX.get(lightEngine);
-                threadedMailbox.tell(() -> {
-                    task.run();
-                    future.complete(null);
-                });
-                future.join();
-            } catch (IllegalAccessException e) {
-                throw toRuntimeException(e);
+                CompletableFuture.runAsync(task).get();
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
             }
         }
     }
