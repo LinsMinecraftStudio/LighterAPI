@@ -29,6 +29,7 @@ import net.minecraft.network.protocol.game.ClientboundLightUpdatePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ThreadedLevelLightEngine;
+import net.minecraft.server.level.TickingTracker;
 import net.minecraft.util.thread.ProcessorMailbox;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LightLayer;
@@ -59,6 +60,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 public class VanillaNMSHandler extends BaseNMSHandler {
+    private final TickingTracker POINT_TICKING_TRACKER = new TickingTracker();
 
     protected static RuntimeException toRuntimeException(Throwable e) {
         if (e instanceof RuntimeException) {
@@ -250,7 +252,7 @@ public class VanillaNMSHandler extends BaseNMSHandler {
     private void onBlockEmissionIncrease(LightEngine<?, ?> lightEngine, BlockPos pos, int level) {
         try {
             lightEngine.runLightUpdates();
-            Reflections.CHECK_EDGE.invoke(lightEngine, Long.MAX_VALUE, pos.asLong(), 15 - level, true);
+            Reflections.CHECK_EDGE.invoke(POINT_TICKING_TRACKER, Long.MAX_VALUE, pos.asLong(), 15 - level, true);
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
