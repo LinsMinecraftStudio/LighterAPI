@@ -268,7 +268,7 @@ public class VanillaNMSHandler extends BaseNMSHandler {
     private void onBlockEmissionIncrease(LightEngine<?, ?> lightEngine, BlockPos pos, int level) {
         try {
             lightEngine.runLightUpdates();
-            Reflections.CHECK_EDGE.invoke(POINT_TICKING_TRACKER,Long.MAX_VALUE, pos.asLong(), 15 - level, true);
+            Reflections.PROPAGATE_DECREASE.invoke(lightEngine, pos.asLong(), level);
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
