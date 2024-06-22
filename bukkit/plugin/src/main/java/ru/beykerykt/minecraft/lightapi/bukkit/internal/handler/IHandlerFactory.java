@@ -28,7 +28,7 @@ import ru.beykerykt.minecraft.lightapi.bukkit.internal.BukkitPlatformImpl;
 public interface IHandlerFactory {
 
     /**
-     * N/A
+     * Creates a new handler instance.
      */
     IHandler createHandler(BukkitPlatformImpl impl) throws Exception;
 }

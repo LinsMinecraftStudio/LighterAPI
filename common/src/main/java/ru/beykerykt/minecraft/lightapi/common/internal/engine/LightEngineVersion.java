@@ -34,11 +34,6 @@ public enum LightEngineVersion {
     UNKNOWN(0),
 
     /**
-     * Minecraft version is before 1.14. For update lighting in client-side, need send full chunk.
-     */
-    V1(1),
-
-    /**
      * Minecraft version is equals or after 1.14. For update lighting in client-side, need send only
      * light update packet.
      */

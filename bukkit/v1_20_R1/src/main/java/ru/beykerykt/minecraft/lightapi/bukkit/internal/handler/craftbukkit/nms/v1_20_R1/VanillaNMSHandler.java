@@ -251,7 +251,7 @@ public class VanillaNMSHandler extends BaseNMSHandler {
                     les.checkBlock(position);
                 } else if (les.getDataLayerData(SectionPos.of(position)) != null) {
                     try {
-                        lightEngineLayer_a(les, position, finalLightLevel);
+                        onBlockEmissionIncrease(les, position, finalLightLevel);
                     } catch (NullPointerException ignore) {
                         // To prevent problems with the absence of the NibbleArray, even
                         // if les.a(SectionPosition.a(position)) returns non-null value (corrupted data)
@@ -267,8 +267,9 @@ public class VanillaNMSHandler extends BaseNMSHandler {
 
     private void onBlockEmissionIncrease(LightEngine<?, ?> lightEngine, BlockPos pos, int level) {
         try {
+            Reflections.PROPAGATE_INCREASE.invoke(lightEngine, pos.asLong(), Long.MAX_VALUE, level);
+            lightEngine.checkBlock(pos);
             lightEngine.runLightUpdates();
-            Reflections.PROPAGATE_DECREASE.invoke(lightEngine, pos.asLong(), level);
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }

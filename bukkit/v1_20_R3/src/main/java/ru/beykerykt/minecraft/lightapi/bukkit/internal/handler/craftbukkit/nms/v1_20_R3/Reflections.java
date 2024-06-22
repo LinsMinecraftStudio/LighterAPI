@@ -2,7 +2,6 @@ package ru.beykerykt.minecraft.lightapi.bukkit.internal.handler.craftbukkit.nms.
 
 import net.minecraft.server.level.ThreadedLevelLightEngine;
 import net.minecraft.util.thread.ProcessorMailbox;
-import net.minecraft.world.level.lighting.DynamicGraphMinFixedPoint;
 import net.minecraft.world.level.lighting.LightEngine;
 
 import java.lang.reflect.Field;
@@ -14,7 +13,8 @@ public class Reflections {
     public static final Field TASK_MAILBOX;
     public static final Field TASK_MAILBOX_STATUS;
     public static final Method REGISTER_FOR_EXECUTION;
-    public static final Method CHECK_EDGE;
+    public static final Method PROPAGATE_INCREASE;
+    public static final Method CHECK_NODE;
 
     static {
         try {
@@ -33,9 +33,11 @@ public class Reflections {
             REGISTER_FOR_EXECUTION = ProcessorMailbox.class.getDeclaredMethod("i");
             REGISTER_FOR_EXECUTION.setAccessible(true);
 
-            CHECK_EDGE = DynamicGraphMinFixedPoint.class.getDeclaredMethod("a", long.class, long.class,
-                    int.class, boolean.class);
-            CHECK_EDGE.setAccessible(true);
+            CHECK_NODE = LightEngine.class.getDeclaredMethod("a", long.class);
+            CHECK_NODE.setAccessible(true);
+
+            PROPAGATE_INCREASE = LightEngine.class.getDeclaredMethod("a", long.class, long.class, int.class);
+            PROPAGATE_INCREASE.setAccessible(true);
         } catch (NoSuchFieldException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

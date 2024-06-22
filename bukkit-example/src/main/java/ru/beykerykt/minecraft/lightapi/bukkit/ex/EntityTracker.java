@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package ru.beykerykt.minecraft.lightapi.bukkit.instance;
+package ru.beykerykt.minecraft.lightapi.bukkit.ex;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

@@ -308,13 +308,6 @@ public class StarlightNMSHandler extends VanillaNMSHandler {
             skyIt.remove();
         }
 
-        executeSync(lightEngine, () -> {
-            try {
-                starLightInterface.propagateChanges();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
         return ResultCode.SUCCESS;
     }
 

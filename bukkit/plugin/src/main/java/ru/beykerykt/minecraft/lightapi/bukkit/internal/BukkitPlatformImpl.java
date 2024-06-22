@@ -65,6 +65,8 @@ public class BukkitPlatformImpl implements IPlatformImpl, IBukkitExtension {
     private final String CONFIG_ENABLE_COMPATIBILITY_MODE = CONFIG_TITLE + ".enable-compatibility-mode";
     private final String CONFIG_SPECIFIC_HANDLER_PATH = CONFIG_TITLE + ".specific-handler-path";
     private final String CONFIG_HANDLERS_TITLE = CONFIG_TITLE + ".handlers";
+
+
     private final BukkitPlugin mPlugin;
     private boolean DEBUG = false;
     private boolean isInit = false;

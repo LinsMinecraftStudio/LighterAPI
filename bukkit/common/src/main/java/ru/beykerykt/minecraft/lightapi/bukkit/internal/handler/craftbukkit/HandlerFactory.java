@@ -39,17 +39,13 @@ public class HandlerFactory implements IHandlerFactory {
     };
     private BukkitPlatformImpl mPlatformImpl;
 
-    private BukkitPlatformImpl getPlatformImpl() {
-        return mPlatformImpl;
-    }
-
-    private boolean isStarlight() {
+    boolean isStarlight() {
         for (String pkg : STARLIGHT_ENGINE_PKG) {
             try {
                 Class.forName(pkg);
                 return true;
             } catch (ClassNotFoundException e) {
-                getPlatformImpl().debug("Class " + pkg + " not found");
+                mPlatformImpl.debug("Class " + pkg + " not found");
             }
         }
         return false;
@@ -64,14 +60,36 @@ public class HandlerFactory implements IHandlerFactory {
         if (serverImplPackage.startsWith(CRAFTBUKKIT_PKG)) { // make sure it's craftbukkit
             String[] line = serverImplPackage.replace(".", ",").split(",");
             String version = line[3];
-
             String handlerClassName = (isStarlight() ? "Starlight" : "Vanilla") + "NMSHandler";
+
+            String mcversion = Bukkit.getBukkitVersion().split("-")[0];
+            int mcversionInt = versionToInt(mcversion);
+
+            if (mcversionInt > 1205) {
+                version = mcversion.replaceAll("\\.", "_");
+                String pkg = getClass().getPackage().getName() + ".nms." + "v1_20_5";
+                handler = (IHandler) Class.forName(pkg + "." + handlerClassName).newInstance();
+                return handler;
+            }
+
             String handlerPath = getClass().getPackage().getName() + ".nms." + version + "." + handlerClassName;
-            // start using nms handler
+
             handler = (IHandler) Class.forName(handlerPath).getConstructor().newInstance();
-        } else { // something else
+        } else {
             throw new NotImplementedException(Bukkit.getName() + " is currently not supported.");
         }
         return handler;
+    }
+
+    private int versionToInt(String version) {
+        String[] parts = version.split("\\.");
+        if (parts.length < 2) {
+            throw new IllegalArgumentException("Invalid version string: " + version);
+        }
+        if (parts.length == 2) {
+            return Integer.parseInt(parts[0]) * 1000 + Integer.parseInt(parts[1]) * 10;
+        } else {
+            return Integer.parseInt(parts[0]) * 1000 + Integer.parseInt(parts[1]) * 10 + Integer.parseInt(parts[2]);
+        }
     }
 }

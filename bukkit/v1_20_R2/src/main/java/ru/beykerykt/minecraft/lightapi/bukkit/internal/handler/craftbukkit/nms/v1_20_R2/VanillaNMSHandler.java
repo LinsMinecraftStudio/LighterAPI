@@ -148,10 +148,6 @@ public class VanillaNMSHandler extends BaseNMSHandler {
         }
     }
 
-    private void lightEngineLayer_a(LightEngine<?, ?> les, BlockPos var0, int var1) {
-        onBlockEmissionIncrease(les, var0, var1);
-    }
-
     private IChunkData createBitChunkData(String worldName, int chunkX, int chunkZ) {
         World world = Bukkit.getWorld(worldName);
         ServerLevel worldServer = ((CraftWorld) world).getHandle();
@@ -251,7 +247,7 @@ public class VanillaNMSHandler extends BaseNMSHandler {
                     les.checkBlock(position);
                 } else if (les.getDataLayerData(SectionPos.of(position)) != null) {
                     try {
-                        lightEngineLayer_a(les, position, finalLightLevel);
+                        onBlockEmissionIncrease(les, position, finalLightLevel);
                     } catch (NullPointerException ignore) {
                         // To prevent problems with the absence of the NibbleArray, even
                         // if les.a(SectionPosition.a(position)) returns non-null value (corrupted data)
@@ -267,8 +263,9 @@ public class VanillaNMSHandler extends BaseNMSHandler {
 
     private void onBlockEmissionIncrease(LightEngine<?, ?> lightEngine, BlockPos pos, int level) {
         try {
+            Reflections.PROPAGATE_INCREASE.invoke(lightEngine, pos.asLong(), Long.MAX_VALUE, level);
+            lightEngine.checkBlock(pos);
             lightEngine.runLightUpdates();
-            Reflections.CHECK_EDGE.invoke(POINT_TICKING_TRACKER, Long.MAX_VALUE, pos.asLong(), 15 - level, true);
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package ru.beykerykt.minecraft.lightapi.bukkit.instance;
+package ru.beykerykt.minecraft.lightapi.bukkit.ex;
 
 import java.util.ArrayList;
 import java.util.Iterator;
